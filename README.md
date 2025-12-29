@@ -8,6 +8,9 @@ Unlike a simple chatbot, this system orchestrates a structured "parliamentary" s
 
 ---
 
+> **Vibe Code Alert**
+> This project was 99% vibe coded as a fun Christmas break project, expanding directly from **llm-council** to see how constructive feedback from different LLMs can help improve results. It currently features contextual data gathering via **MCP (Web Search)** and is designed to be easily updated with more tools as needed. Code is ephemeral now ask your LLM to change it in whatever way you like.
+
 ## ✨ Features
 
 * **Adversarial Debate Engine:** Three specialized AI agents (Proponent, Critic, Moderator) interact in a cyclic graph to explore a topic deeply.
@@ -36,30 +39,34 @@ Unlike a simple chatbot, this system orchestrates a structured "parliamentary" s
 
 ### Installation
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
+
     ```bash
     git clone [https://github.com/yourusername/llm-parliament.git](https://github.com/yourusername/llm-parliament.git)
     cd llm-parliament
     ```
 
-2.  **Set up environment variables:**
+2. **Set up environment variables:**
     Create a `.env` file in the root directory:
+
     ```bash
     OPENROUTER_API_KEY=sk-or-your-key-here
     BRAVE_API_KEY=your-brave-key-here  # Optional, enables search tool
     ```
 
-3.  **Run the application:**
-    
+3. **Run the application:**
+
     We provide a handy start script that launches both backend and frontend:
+
     ```bash
     chmod +x start.sh
     ./start.sh
     ```
 
     **Alternatively, you can run them manually:**
-    
+
     *Backend:*
+
     ```bash
     uv run python -m backend.main 
     # OR 
@@ -67,23 +74,24 @@ Unlike a simple chatbot, this system orchestrates a structured "parliamentary" s
     ```
 
     *Frontend:*
+
     ```bash
     cd frontend 
     npm install 
     npm run dev
     ```
 
-4.  **Open your browser:**
+4. **Open your browser:**
     Navigate to [http://localhost:5173](http://localhost:5173).
 
 ---
 
 ## 📖 Usage
 
-1.  **Configure the House:** Use the sidebar to select the models for the *Government* (Proponent), *Opposition* (Critic), and the *Speaker* (Moderator).
-2.  **Table a Motion:** Enter a debate topic in the main chat input (e.g., *"AI will do more harm than good"*).
-3.  **Watch the Debate:** The Moderator will open the session, and the agents will take turns arguing. You can expand/collapse their speeches to read detailed points.
-4.  **Review the Verdict:** At the end of the configured rounds, the Moderator will produce a summary table and key takeaways.
+1. **Configure the House:** Use the sidebar to select the models for the *Government* (Proponent), *Opposition* (Critic), and the *Speaker* (Moderator).
+2. **Table a Motion:** Enter a debate topic in the main chat input (e.g., *"AI will do more harm than good"*).
+3. **Watch the Debate:** The Moderator will open the session, and the agents will take turns arguing. You can expand/collapse their speeches to read detailed points.
+4. **Review the Verdict:** At the end of the configured rounds, the Moderator will produce a summary table and key takeaways.
 
 ---
 
