@@ -1,112 +1,127 @@
+/* Existing styles */
 .debate-message {
-  margin-bottom: 24px;
-  border-radius: 8px;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  padding: 0;
-  overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background-color: #fff;
+    transition: all 0.2s;
+}
+
+.debate-message.user {
+    border-color: #bbdefb;
+    background-color: #e3f2fd;
+}
+
+.debate-message.pro {
+    border-left: 4px solid #4CAF50;
+}
+
+.debate-message.con {
+    border-left: 4px solid #f44336;
+}
+
+.debate-message.mod {
+    border-left: 4px solid #FF9800;
+    background-color: #fff3e0;
+}
+
+.debate-message.system {
+    background-color: #f5f5f5;
+    font-style: italic;
+}
+
+.message-header {
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid transparent;
 }
 
 .debate-message:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-/* --- Role Specific Borders & Accents --- */
-.debate-message.pro { border-left: 4px solid #0ea5e9; }
-.debate-message.con { border-left: 4px solid #ef4444; }
-.debate-message.mod { border-left: 4px solid #8b5cf6; background: #f9fafb; }
-.debate-message.user { border-left: 4px solid #10b981; background: #f0fdf4; }
-
-/* --- Header & Badge --- */
-.message-header {
-  padding: 12px 16px;
-  border-bottom: 1px solid #f3f4f6;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer; /* Clickable to toggle */
-  user-select: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .role-badge {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
-.pro-badge { background: #e0f2fe; color: #0369a1; }
-.con-badge { background: #fee2e2; color: #b91c1c; }
-.mod-badge { background: #ede9fe; color: #6d28d9; }
-.user-badge { background: #d1fae5; color: #047857; }
+.user-badge {
+    color: #1976D2;
+}
+
+.pro-badge {
+    color: #2E7D32;
+}
+
+.con-badge {
+    color: #C62828;
+}
+
+.mod-badge {
+    color: #EF6C00;
+}
 
 .toggle-btn {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    display: flex;
+    align-items: center;
 }
 
-.toggle-btn:hover { color: #6b7280; }
-
-/* --- Body --- */
 .message-body {
-  padding: 16px;
-  line-height: 1.6;
-  color: #374151;
-  font-size: 15px;
+    padding: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
-/* Markdown Styling */
-.message-body p { margin-bottom: 1em; }
-.message-body p:last-child { margin-bottom: 0; }
-
-/* Lists */
-.message-body ul, .message-body ol {
-  margin-bottom: 1em;
-  padding-left: 24px;
+/* Tool Usage Styles */
+.tool-usage-section {
+    margin-bottom: 10px;
+    font-size: 0.85rem;
 }
 
-.message-body li {
-  margin-bottom: 0.5em;
+.tool-details summary {
+    cursor: pointer;
+    color: #666;
+    font-weight: 500;
+    user-select: none;
 }
 
-/* Tables (GitHub Flavored Markdown) */
-.message-body table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 16px 0;
-  font-size: 14px;
+.tool-logs {
+    margin-top: 8px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #eee;
 }
 
-.message-body th, .message-body td {
-  border: 1px solid #d1d5db;
-  padding: 8px 12px;
-  text-align: left;
+.tool-call-item,
+.tool-output-item {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
-.message-body th {
-  background-color: #f3f4f6;
-  font-weight: 600;
-  color: #111;
+.tool-call-item:last-child,
+.tool-output-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
 }
 
-.message-body tr:nth-child(even) {
-  background-color: #f9fafb;
-}
-
-.message-body blockquote {
-  border-left: 3px solid #d1d5db;
-  padding-left: 12px;
-  color: #6b7280;
-  font-style: italic;
+pre {
+    background: #f1f1f1;
+    padding: 4px;
+    border-radius: 2px;
+    overflow-x: auto;
+    font-size: 0.8em;
+    margin: 4px 0;
 }

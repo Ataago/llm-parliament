@@ -44,7 +44,7 @@ async def generate_conversation_title(content: str) -> str:
     """Generate a short title for the conversation using a cheap model."""
     try:
         # Use a reliable fast model for title generation
-        llm = get_chat_model("google/gemini-2.0-flash-exp:free", temperature=0.7)
+        llm = get_chat_model("google/gemini-2.5-flash", temperature=0.7)
         messages = [
             {"role": "system", "content": "Generate a very short, 3-5 word title for this debate topic. Do not use quotes."},
             {"role": "user", "content": content}
@@ -107,6 +107,16 @@ async def send_message_stream(conversation_id: str, request: SendMessageRequest)
     
     # Ensure topic is set
     config_dict["topic"] = request.content
+    
+    # Generate Dynamic ASCII Graph
+    try:
+        from langchain_core.runnables.graph import MermaidDrawMethod
+        # draw_ascii() is a method on the CompiledGraph.get_graph()
+        ascii_graph = graph_app.get_graph().draw_ascii()
+        config_dict["ascii_graph"] = ascii_graph
+    except Exception as e:
+        print(f"Failed to draw ASCII graph: {e}")
+        config_dict["ascii_graph"] = "[Graph Visualization Failed]"
 
     initial_state = {
         "messages": [HumanMessage(content=request.content)],
@@ -136,12 +146,25 @@ async def send_message_stream(conversation_id: str, request: SendMessageRequest)
                         sender_name = getattr(last_msg, "name", node_name)
                         
                         # Prepare payload
+                        # Prepare payload
+                        raw_msg = last_msg
+                        msg_type = "message"
+                        
+                        # Detect Message Type
+                        if raw_msg.type == "tool":
+                            msg_type = "tool_output"
+                            sender_name = "Tool" # Or specific tool name if available
+                        elif raw_msg.type == "ai" and getattr(raw_msg, "tool_calls", None):
+                            msg_type = "tool_call"
+                        
                         payload = {
-                            "type": "message",
+                            "type": msg_type,
                             "data": {
-                                "role": "assistant",
-                                "name": sender_name, # "Government", "Opposition", etc.
-                                "content": content
+                                "role": "assistant" if raw_msg.type == "ai" else "tool",
+                                "name": sender_name,
+                                "content": content,
+                                "tool_calls": getattr(raw_msg, "tool_calls", None),
+                                "tool_call_id": getattr(raw_msg, "tool_call_id", None)
                             }
                         }
                         

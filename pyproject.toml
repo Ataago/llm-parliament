@@ -13,5 +13,6 @@ dependencies = [
     "langgraph>=0.0.10",
     "langchain-openai>=0.0.5",
     "langchain-core>=0.1.10",
-    "fastmcp>=0.1.0"
+    "fastmcp>=0.1.0",
+    "grandalf>=0.8"
 ]

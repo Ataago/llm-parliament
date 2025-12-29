@@ -12,7 +12,7 @@ load_dotenv()
 mcp = FastMCP("ParliamentLibrary")
 
 @mcp.tool()
-async def search_web(query: str, max_results: int = 3) -> str:
+def search_web(query: str, max_results: int = 3) -> str:
     """
     Search the web for facts, statistics, or recent news to support an argument.
     Use this when you need citations or evidence.
@@ -29,8 +29,8 @@ async def search_web(query: str, max_results: int = 3) -> str:
     params = {"q": query, "count": max_results}
 
     try:
-        async with httpx.AsyncClient() as client:
-            resp = await client.get(url, headers=headers, params=params, timeout=10.0)
+        with httpx.Client() as client:
+            resp = client.get(url, headers=headers, params=params, timeout=10.0)
             
         if resp.status_code != 200:
             return f"Search failed with status {resp.status_code}"
@@ -72,23 +72,19 @@ def get_debate_rules() -> str:
 def get_tools_list():
     """
     Returns the FastMCP tools converted to LangChain StructuredTools.
-    
-    This fixes the 'Unsupported function' error. LangChain's bind_tools() expects
-    callable objects (functions) or Pydantic models. FastMCP's internal tool
-    representation is wrapped, so we must extract the underlying function 
-    and wrap it in StructuredTool to make it compatible with ChatOpenAI.
+    We manually wrap them to ensure we access the underlying function logic.
     """
-    langchain_tools = []
-    
-    # Iterate over all tools registered with the FastMCP server
-    for tool in mcp.list_tools():
-        # FastMCP's tool.fn holds the original function with signature
-        # We wrap it in StructuredTool to make it compatible with LangChain
-        lc_tool = StructuredTool.from_function(
-            func=tool.fn,
-            name=tool.name,
-            description=tool.description
+    return [
+        StructuredTool.from_function(
+            func=search_web.fn,
+            name="search_web",
+            description="Search the web for facts, statistics, or recent news to support an argument."
+        ),
+        StructuredTool.from_function(
+            func=get_debate_rules.fn,
+            name="get_debate_rules",
+            description="Retrieve the official Standing Orders (Rules of Debate)."
         )
-        langchain_tools.append(lc_tool)
-        
-    return langchain_tools
+    ]
+
+    
