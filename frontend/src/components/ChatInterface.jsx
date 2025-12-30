@@ -39,7 +39,7 @@ export default function ChatInterface({
             <div className="chat-interface">
                 <div className="empty-state">
                     <div className="empty-icon">🏛️</div>
-                    <h2>Welcome to the House</h2>
+                    <h2>Welcome to the LLM Parliament</h2>
                     <p>Create a new session to begin the debate.</p>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 # LLM Parliament 🏛️
 
-![parliament](parliament.png)
+![parliament](parliament2.png)
 
 **LLM Parliament** is an adversarial multi-agent debate platform where AI models debate, rebut, and moderate complex topics in real-time.
 
@@ -9,7 +9,7 @@ Unlike a simple chatbot, this system orchestrates a structured "parliamentary" s
 ---
 
 > **Vibe Code Alert**
-> This project was 99% vibe coded as a fun Christmas break project, expanding directly from **llm-council** to see how constructive feedback from different LLMs can help improve results. It currently features contextual data gathering via **MCP (Web Search)** and is designed to be easily updated with more tools as needed. Code is ephemeral now ask your LLM to change it in whatever way you like.
+> This project was 99% vibe coded as a fun Christmas break project, expanding directly from **[llm-council](https://github.com/karpathy/llm-council/tree/master)** to see how constructive feedback from different LLMs can help improve results. It currently features contextual data gathering via **MCP (Web Search)** and is designed to be easily updated with more tools as needed. Code is ephemeral now ask your LLM to change it in whatever way you like.
 
 ## ✨ Features
 
@@ -39,11 +39,20 @@ Unlike a simple chatbot, this system orchestrates a structured "parliamentary" s
 
 ### Installation
 
-1. **Clone the repository:**
+1. **Install Dependencies:**
+
+    *Backend:*
 
     ```bash
-    git clone [https://github.com/yourusername/llm-parliament.git](https://github.com/yourusername/llm-parliament.git)
-    cd llm-parliament
+    uv sync
+    ```
+
+    *Frontend:*
+
+    ```bash
+    cd frontend
+    npm install
+    cd ..
     ```
 
 2. **Set up environment variables:**
