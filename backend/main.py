@@ -15,6 +15,13 @@ from . import storage
 from .debate_graph import build_debate_graph
 from .openrouter import get_chat_model # Import for title generation
 
+import mlflow
+from mlflow.langchain.langchain_tracer import MlflowLangchainTracer
+
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.set_experiment("LLM Parliament")
+
+
 app = FastAPI(title="LLM Parliament API")
 
 # Enable CORS for local development
@@ -133,54 +140,57 @@ async def send_message_stream(conversation_id: str, request: SendMessageRequest)
                 title = await generate_conversation_title(request.content)
                 storage.update_conversation_title(conversation_id, title)
                 yield f"data: {json.dumps({'type': 'title', 'data': title})}\n\n"
-
+            
             # 2. Stream Graph Events
             # We use 'updates' mode to see what each node produces
-            async for event in graph_app.astream(initial_state, stream_mode="updates"):
-                for node_name, node_output in event.items():
-                    
-                    # Extract message from the node output
-                    if "messages" in node_output and node_output["messages"]:
-                        last_msg = node_output["messages"][-1]
-                        content = last_msg.content
-                        sender_name = getattr(last_msg, "name", node_name)
+            # Use MlflowLangchainTracer to capture async events
+            config = {"callbacks": [MlflowLangchainTracer()]}
+            
+            with mlflow.start_run(run_name=f"Debate: {conversation_id[:8]}", nested=True):
+                async for event in graph_app.astream(initial_state, config=config, stream_mode="updates"):
+                    for node_name, node_output in event.items():
                         
-                        # Prepare payload
-                        # Prepare payload
-                        raw_msg = last_msg
-                        msg_type = "message"
-                        
-                        # Detect Message Type
-                        if raw_msg.type == "tool":
-                            msg_type = "tool_output"
-                            sender_name = "Tool" # Or specific tool name if available
-                        elif raw_msg.type == "ai" and getattr(raw_msg, "tool_calls", None):
-                            msg_type = "tool_call"
-                        
-                        payload = {
-                            "type": msg_type,
-                            "data": {
-                                "role": "assistant" if raw_msg.type == "ai" else "tool",
-                                "name": sender_name,
-                                "content": content,
-                                "tool_calls": getattr(raw_msg, "tool_calls", None),
-                                "tool_call_id": getattr(raw_msg, "tool_call_id", None)
+                        # Extract message from the node output
+                        if "messages" in node_output and node_output["messages"]:
+                            last_msg = node_output["messages"][-1]
+                            content = last_msg.content
+                            sender_name = getattr(last_msg, "name", node_name)
+                            
+                            # Prepare payload
+                            raw_msg = last_msg
+                            msg_type = "message"
+                            
+                            # Detect Message Type
+                            if raw_msg.type == "tool":
+                                msg_type = "tool_output"
+                                sender_name = "Tool" # Or specific tool name if available
+                            elif raw_msg.type == "ai" and getattr(raw_msg, "tool_calls", None):
+                                msg_type = "tool_call"
+                            
+                            payload = {
+                                "type": msg_type,
+                                "data": {
+                                    "role": "assistant" if raw_msg.type == "ai" else "tool",
+                                    "name": sender_name,
+                                    "content": content,
+                                    "tool_calls": getattr(raw_msg, "tool_calls", None),
+                                    "tool_call_id": getattr(raw_msg, "tool_call_id", None)
+                                }
                             }
-                        }
+                            
+                            # Save to storage immediately
+                            storage.add_message(conversation_id, payload["data"])
+                            
+                            # Stream to client
+                            yield f"data: {json.dumps(payload)}\n\n"
                         
-                        # Save to storage immediately
-                        storage.add_message(conversation_id, payload["data"])
-                        
-                        # Stream to client
-                        yield f"data: {json.dumps(payload)}\n\n"
-                    
-                    # Handle Moderator Decision events (next_speaker)
-                    if "next_speaker" in node_output:
-                        decision = {
-                            "type": "status",
-                            "data": f"Moderator decided: {node_output['next_speaker']} speaks next."
-                        }
-                        yield f"data: {json.dumps(decision)}\n\n"
+                        # Handle Moderator Decision events (next_speaker)
+                        if "next_speaker" in node_output:
+                            decision = {
+                                "type": "status",
+                                "data": f"Moderator decided: {node_output['next_speaker']} speaks next."
+                            }
+                            yield f"data: {json.dumps(decision)}\n\n"
 
             yield f"data: {json.dumps({'type': 'complete'})}\n\n"
 
