@@ -104,20 +104,33 @@ Unlike a simple chatbot, this system orchestrates a structured "parliamentary" s
 
 ---
 
-## 📂 Project Structure
+## ⚠️ Limitations & Future Improvements
 
-```text
-llm-parliament/
-├── backend/
-│   ├── debate_graph.py    # The LangGraph logic (Pro -> Mod -> Con loop)
-│   ├── tools.py           # FastMCP tool definitions (Search, Rules)
-│   ├── main.py            # FastAPI server & streaming endpoints
-│   ├── state.py           # Shared state definition
-│   └── openrouter.py      # LLM client wrapper
-├── frontend/
-│   ├── src/
-│   │   ├── components/    # React components (ChatInterface, Sidebar)
-│   │   └── api.js         # API client
-│   └── package.json
-├── start.sh               # Startup script
-└── pyproject.toml         # Python dependencies
+While functional, this project is an active experiment in agentic orchestration. We are open to contributions to address the following engineering challenges:
+
+### Role Confusion & Narrow Debates
+* **Issue:** Occasionally, agents (Pro/Con) may lose track of their specific stance or "roleplay" the opponent if the message history becomes too long or confusing.
+* **Goal:** Improve the `debate_graph.py` logic to pass selective context (e.g., only the last 3 turns + a running summary) rather than the full chat history. This will keep the agents focused on the immediate argument.
+
+### Topic Drift
+* **Issue:** Long debates can sometimes drift away from the original motion.
+* **Goal:** Implement a "Relevance Scorer" node in the graph. The Moderator should automatically check if the last argument was on-topic and, if not, issue a specific instruction to "steer the debate back" to the core motion.
+
+### Tool Usage Hallucinations
+* **Issue:** Agents currently have access to tools but may hallucinate using them or fail to parse results correctly.
+* **Goal:** Enhance the FastMCP integration to robustly handle tool outputs and retry logic if a tool call fails.
+
+### Dynamic Debate Formats
+* **Goal:** Allow users to dynamically select the flow (graph structure) of the debate. Future versions could support different competitive formats (e.g., British Parliamentary, Oxford-style) by swapping out the LangGraph configuration.
+
+### Unified MLflow Tracing
+* **Goal:** Integrate unified MLflow runs per conversation to trace agent thoughts, tool usage, and moderation logic across multiple turns.
+
+### Final Judge & Voting
+* **Goal:** Implement a "Judge" agent to review the debate history at the end and declare a winner based on argument strength and factual accuracy.
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
