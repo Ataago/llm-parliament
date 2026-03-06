@@ -1,5 +1,7 @@
 # LLM Parliament 🏛️
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Ataago/llm-parliament)
+---
 ![parliament](parliament2.png)
 
 **LLM Parliament** is an adversarial multi-agent debate platform where AI models debate, rebut, and moderate complex topics in real-time.
